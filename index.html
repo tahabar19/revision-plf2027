@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مراجعة صوتية – النقل الطرقي، السلامة الطرقية، اللوجيستيك</title>
+<meta name="description" content="حلقات صوتية للمراجعة انطلاقا من عرض ميزانية وزارة النقل واللوجيستيك – مشروع قانون المالية 2027">
+<meta name="theme-color" content="#0d3b2e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!--APP-->
+<header class="top">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg>
+    </div>
+    <div>
+      <h1>مراجعة صوتية</h1>
+      <p class="sub">مشروع قانون المالية 2027 · وزارة النقل واللوجيستيك</p>
+    </div>
+  </div>
+  <button class="icon-btn" id="btnSettings" aria-label="الإعدادات">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</header>
+
+<nav class="themes" id="themeTabs" role="tablist"></nav>
+
+<main id="main">
+  <section id="viewTheme">
+    <div class="hero" id="hero"></div>
+    <div class="seg" id="subTabs" role="tablist">
+      <button data-tab="episodes" class="on">الحلقات</button>
+      <button data-tab="facts">الأرقام المفتاحية</button>
+      <button data-tab="quiz">اختبر نفسك</button>
+    </div>
+    <div id="panelEpisodes" class="panel"></div>
+    <div id="panelFacts" class="panel" hidden></div>
+    <div id="panelQuiz" class="panel" hidden></div>
+  </section>
+
+  <section id="viewReader" hidden>
+    <button class="back" id="btnBack">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      الحلقات
+    </button>
+    <div id="voiceWarn" class="warn" hidden></div>
+    <article id="transcript" class="transcript"></article>
+    <div class="reader-nav" id="readerNav"></div>
+  </section>
+  <p class="source" id="sourceNote"></p>
+</main>
+
+<footer class="player" id="player" hidden>
+  <div class="p-row">
+    <button class="p-info" id="pOpen">
+      <span class="p-theme" id="pTheme"></span>
+      <span class="p-title" id="pTitle"></span>
+    </button>
+    <span class="badge" id="pSource"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="1" step="0.1" value="0" aria-label="التقدم">
+  <div class="p-row p-ctrls">
+    <span class="p-time" id="pTime"></span>
+    <div class="p-btns">
+      <button class="ctl" id="pPrev" aria-label="الفقرة السابقة">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z" transform="scale(-1,1) translate(-24,0)"/></svg>
+      </button>
+      <button class="ctl play" id="pPlay" aria-label="تشغيل">
+        <svg id="icoPlay" viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="icoPause" viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+      <button class="ctl" id="pNext" aria-label="الفقرة التالية">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z"/></svg>
+      </button>
+    </div>
+    <button class="speed" id="pSpeed" aria-label="السرعة">1×</button>
+  </div>
+</footer>
+
+<dialog id="dlgSettings">
+  <form method="dialog" class="dlg">
+    <h2>الإعدادات</h2>
+
+    <fieldset>
+      <legend>مصدر الصوت</legend>
+      <label class="opt"><input type="radio" name="source" value="auto"> ملفات MP3 إن وُجدت، وإلا صوت الجهاز</label>
+      <label class="opt"><input type="radio" name="source" value="device"> صوت الجهاز دائما</label>
+      <p class="hint" id="mp3Status"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>صوت الجهاز (عند غياب MP3)</legend>
+      <select id="voiceSel"></select>
+      <button type="button" class="btn small" id="btnTestVoice">جرّب الصوت</button>
+      <p class="hint" id="voiceHint"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>الاستماع</legend>
+      <label class="opt"><input type="checkbox" id="optAutoNext"> الانتقال تلقائيا إلى الحلقة التالية</label>
+      <label class="opt"><input type="checkbox" id="optScroll"> تمرير النص تلقائيا مع الصوت</label>
+    </fieldset>
+
+    <fieldset id="offlineBox" hidden>
+      <legend>الاستماع دون إنترنت</legend>
+      <button type="button" class="btn small" id="btnOffline">تحميل كل الحلقات على هذا الجهاز</button>
+      <p class="hint" id="offlineStatus"></p>
+    </fieldset>
+
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" id="btnReset">مسح التقدم</button>
+      <button class="btn" value="close">إغلاق</button>
+    </div>
+  </form>
+</dialog>
+
+<audio id="audio" preload="metadata"></audio>
+<!--/APP-->
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

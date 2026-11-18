@@ -1,0 +1,12 @@
+{
+  "name": "مراجعة صوتية – النقل والسلامة الطرقية واللوجيستيك",
+  "short_name": "مراجعة صوتية",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#f5f2ea",
+  "theme_color": "#0d3b2e",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

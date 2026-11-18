@@ -1,0 +1,72 @@
+# Génère les MP3 (voix neuronale arabe) puis publie le site sur GitHub Pages.
+# Prérequis : Settings → Pages → Build and deployment → Source : « GitHub Actions ».
+name: Audio + GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      voice:
+        description: "Voix (ar-MA-JamalNeural, ar-MA-MounaNeural, ar-SA-HamedNeural, ar-SA-ZariyahNeural...)"
+        required: false
+        default: "ar-MA-JamalNeural"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer edge-tts et ffmpeg
+        run: |
+          pip install "edge-tts>=6.1"
+          which ffmpeg || (sudo apt-get update -y && sudo apt-get install -y ffmpeg)
+
+      - name: Restaurer les MP3 déjà générés
+        uses: actions/cache@v4
+        with:
+          path: audio
+          key: audio-${{ hashFiles('data.js', 'scripts/generate_audio.py') }}-${{ github.event.inputs.voice || 'default' }}
+          restore-keys: audio-
+
+      - name: Générer les MP3
+        continue-on-error: true   # en cas d'échec, le site fonctionne quand même avec la voix du téléphone
+        env:
+          TTS_VOICE: ${{ github.event.inputs.voice || 'ar-MA-JamalNeural' }}
+        run: python scripts/generate_audio.py
+
+      - name: Préparer le site
+        run: |
+          mkdir -p _site
+          cp index.html styles.css app.js data.js sw.js manifest.webmanifest icon.svg _site/
+          if [ -d audio ]; then cp -r audio _site/; fi
+          ls -la _site _site/audio || true
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
