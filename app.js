@@ -82,8 +82,22 @@
   }
 
   /* ---------------- état ---------------- */
-  var ui = { th: store.get('theme', 0), tab: 'episodes', view: 'theme' };
-  if (!D.themes[ui.th]) ui.th = 0;
+  // Thème et reprise mémorisés par identifiant (la v1 stockait des indices, avec 3 axes dans cet ordre)
+  var OLD_ORDER = ['road', 'safety', 'logi'];
+  function themeIdx(id) { for (var i = 0; i < D.themes.length; i++) if (D.themes[i].id === id) return i; return -1; }
+  var ui = { th: themeIdx(store.get('themeId', OLD_ORDER[store.get('theme', -1)])), tab: 'episodes', view: 'theme' };
+  if (ui.th < 0) ui.th = 0;
+  function getLast() {
+    var l = store.get('last', null), i, j;
+    if (!l) return null;
+    if (l.id) {
+      for (i = 0; i < D.themes.length; i++) for (j = 0; j < D.themes[i].tracks.length; j++)
+        if (D.themes[i].tracks[j].id === l.id) return { th: i, tr: j, seg: l.seg || 0 };
+      return null;
+    }
+    i = themeIdx(OLD_ORDER[l.th]);
+    return i >= 0 && D.themes[i].tracks[l.tr] ? { th: i, tr: l.tr, seg: l.seg || 0 } : null;
+  }
   var P = { th: -1, tr: -1, seg: 0, chunk: 0, playing: false, mode: 'tts', token: 0, timer: null };
   function curTrack() { return P.th >= 0 ? D.themes[P.th].tracks[P.tr] : null; }
 
@@ -111,7 +125,7 @@
       var b = el('button', i === ui.th ? 'on' : '', '<span class="ic">' + th.icon + '</span><span>' + esc(th.title) + '</span><span class="pc">' + k + ' / ' + n + '</span>');
       b.style.setProperty('--tc', th.color);
       b.setAttribute('role', 'tab');
-      b.onclick = function () { ui.th = i; store.set('theme', i); showView('theme'); renderAll(); window.scrollTo(0, 0); };
+      b.onclick = function () { ui.th = i; store.set('themeId', D.themes[i].id); showView('theme'); renderAll(); window.scrollTo(0, 0); };
       nav.appendChild(b);
     });
   }
@@ -120,7 +134,7 @@
     var th = D.themes[ui.th], hero = $('hero');
     var total = th.tracks.reduce(function (a, t) { return a + estSecs(t); }, 0);
     var k = th.tracks.filter(function (t) { return done[t.id]; }).length;
-    var last = store.get('last', null);
+    var last = getLast();
     hero.innerHTML =
       '<h2>' + th.icon + ' ' + esc(th.title) + '</h2>' +
       '<p class="meta">' + arNum(th.tracks.length, 'حلقة واحدة', 'حلقتان', 'حلقات', 'حلقة') + ' · حوالي ' + mins(total) + ' دقيقة · أنهيت ' + k + ' من ' + th.tracks.length + '</p>' +
@@ -130,7 +144,7 @@
     var bAll = el('button', 'btn alt', '▶ تشغيل المحور كاملا');
     bAll.onclick = function () { settings.autoNext = true; saveSettings(); startTrack(ui.th, 0, 0, true); };
     act.appendChild(bAll);
-    if (last && last.th === ui.th && D.themes[last.th].tracks[last.tr] && !(P.th === last.th && P.tr === last.tr)) {
+    if (last && last.th === ui.th && !(P.th === last.th && P.tr === last.tr)) {
       var bRes = el('button', 'btn ghost', 'متابعة: الحلقة ' + (last.tr + 1));
       bRes.onclick = function () { startTrack(last.th, last.tr, last.seg || 0, true); };
       act.appendChild(bRes);
@@ -311,7 +325,7 @@
       audio.playbackRate = settings.rate;
       if (P.seg) audio.addEventListener('loadedmetadata', function once() { audio.removeEventListener('loadedmetadata', once); audio.currentTime = m.starts[P.seg] || 0; });
     } else { audio.removeAttribute('src'); try { audio.load(); } catch (e) { } }
-    ui.th = th; store.set('theme', th);
+    ui.th = th; store.set('themeId', D.themes[th].id);
     $('player').hidden = false;
     if (open) showReader(); else renderReader();
     updatePlayer(); renderEpisodes(); renderThemes(); setMediaSession();
@@ -377,7 +391,7 @@
     P.playing = false; P.seg = 0; P.chunk = 0;
     updatePlayer(); renderThemes(); renderHero(); renderEpisodes();
   }
-  function saveLast() { if (P.th >= 0) store.set('last', { th: P.th, tr: P.tr, seg: P.seg }); }
+  function saveLast() { if (P.th >= 0) store.set('last', { id: D.themes[P.th].tracks[P.tr].id, seg: P.seg }); }
 
   function updatePlayer() {
     var t = curTrack(); if (!t) return;

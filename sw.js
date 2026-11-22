@@ -1,5 +1,5 @@
 /* Service worker : rend le site utilisable hors ligne (GitHub Pages / https). */
-var SHELL = 'rev27-shell-v1';
+var SHELL = 'rev27-shell-v2';
 var AUDIO = 'rev27-audio';
 var FILES = ['./', 'index.html', 'styles.css', 'app.js', 'data.js', 'manifest.webmanifest', 'icon.svg'];
 

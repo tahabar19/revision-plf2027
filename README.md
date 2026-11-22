@@ -1,9 +1,10 @@
-# 🎧 Révision audio – النقل الطرقي · السلامة الطرقية · اللوجيستيك
+# 🎧 Révision audio – ميزانية وزارة النقل واللوجيستيك · PLF 2027
 
 Site web de révision **en audio** (arabe), construit à partir de la présentation
 *Budget du Ministère du Transport et de la Logistique – PLF 2027* (Chambre des représentants, 3 novembre 2026).
 
-- **23 épisodes** (~43 min au total) répartis en 3 axes : transport routier, sécurité routière, logistique
+- **53 épisodes** (~1 h 40 au total) répartis en 8 axes : vue d'ensemble (cadre, faits marquants 2026, indicateurs), transport ferroviaire, transport aérien et aéroports, transport routier, sécurité routière, logistique, secteurs transversaux (digitalisation, plan législatif), budget 2027
+  — tous les axes de la présentation sauf le transport maritime (النقل البحري)
 - Pour chaque axe : un épisode « مراجعة سريعة » (révision express des chiffres) et un **quiz audio** (question → 3 s de réflexion → réponse)
 - Onglet **الأرقام المفتاحية** (chiffres clés) et onglet **اختبر نفسك** (cartes question/réponse)
 - Texte affiché et surligné pendant l'écoute, vitesse réglable (0,8× à 2×), reprise là où vous vous êtes arrêté, fonctionne hors ligne une fois installé
@@ -38,7 +39,7 @@ Le site choisit tout seul : MP3 s'ils existent, sinon voix du téléphone.
    > **Add file → Create new file**, nom `.github/workflows/pages.yml`, puis collez le contenu du fichier.
 2. **Settings → Pages → Build and deployment → Source : GitHub Actions**.
 3. Onglet **Actions** : le workflow « Audio + GitHub Pages » se lance à chaque push (ou bouton **Run workflow**).
-   Il génère les 23 MP3 (~5 min la première fois), puis publie le site.
+   Il génère les 53 MP3 (~10 min la première fois, puis seulement les épisodes modifiés), puis publie le site.
 4. Pour changer de voix : **Actions → Audio + GitHub Pages → Run workflow** et saisissez par ex.
    `ar-MA-MounaNeural` (voix féminine marocaine), `ar-SA-HamedNeural`, `ar-EG-ShakirNeural`…
 
